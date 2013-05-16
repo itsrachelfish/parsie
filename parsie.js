@@ -3,7 +3,8 @@ var express     = require('express')
   , server      = require('http').createServer(app)
   , io          = require('socket.io').listen(server)
   , net         = require('net')
-  , parser      = require('packet').createParser();
+  , parser      = require('packet').createParser()
+  , serializer  = require('packet').createSerializer();
 
 server.listen(1044);
 app.use(express.static(__dirname + '/static'));
@@ -19,15 +20,14 @@ io.sockets.on('connection', function(socket)
     
     socket.on('packet', function(data)
     {
-        console.log('delicious');
         console.log(data);
 
         try
         {
-            parser.extract(data.pattern, function (unknown, type, testing)
+            parser.extract(data.pattern, function ()
             {
-                console.log(unknown, type, testing);
-                socket.emit('parsed', [unknown, type, testing]);
+                var args = Array.prototype.slice.call(arguments);
+                socket.emit('parsed', args);
             });
 
             parser.parse(new Buffer(data.packet, 'hex'));
