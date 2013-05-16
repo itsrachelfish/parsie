@@ -9,7 +9,7 @@ socket.on('connected', function(data)
 
 socket.on('error', function(data)
 {
-    alert('You done messed up: \n'+data.message)
+    console.log(data);
 });
 
 socket.on('parsed', function(packet)

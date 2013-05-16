@@ -20,15 +20,21 @@ io.sockets.on('connection', function(socket)
     socket.on('packet', function(data)
     {
         console.log('delicious');
-        
-        parser.extract("b8, b8, b16, b32", function (unknown, type, testing) {
-          console.log(unknown, type, testing);
-          
-          socket.emit('parsed', [unknown, type, testing]);
-        });
-
         console.log(data);
 
-        parser.parse(new Buffer(data.message, 'hex'));
+        try
+        {
+            parser.extract(data.pattern, function (unknown, type, testing)
+            {
+                console.log(unknown, type, testing);
+                socket.emit('parsed', [unknown, type, testing]);
+            });
+
+            parser.parse(new Buffer(data.packet, 'hex'));
+        }
+        catch(e)
+        {
+            socket.emit('error', {name: e.name, message: e.message});
+        }
     });
 });

@@ -2,7 +2,7 @@
 
 $(document).ready(function()
 {
-    $('.packet').keypress(function(event)
+    $('.packet, .pattern').keypress(function(event)
     {
         // When a user presses enter
         if(event.which == 13)
@@ -12,7 +12,7 @@ $(document).ready(function()
     $('.submit').click(function()
     {
         var packet = $('.packet').val();
-        socket.emit('packet', {message: packet});
-        $('.packet').val('');
+        var pattern = $('.pattern').val();
+        socket.emit('packet', {packet: packet, pattern: pattern});
     });
 });
